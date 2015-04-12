@@ -1,9 +1,9 @@
 #!/usr/bin/env python
 
 """
-Builds or updates an existing corups of transliterated files.
+Builds or updates an existing corpus of transliterated files.
 All input files for building the corpus must be in one directory.
-All files with tamil files must have their names being with ta_ and end with .txt
+All files with tamil characters must have their names being with ta_ and end with .txt
 For english files, it should begin with en_ and end with .txt
 All output files will have _out.txt suffix. So, if the input file is named
 ta_sample.txt then its corresponding transliterated English content will be
