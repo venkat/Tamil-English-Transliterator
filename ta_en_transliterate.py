@@ -84,5 +84,5 @@ if __name__ == "__main__":
     t = TamilTransliterator(tamil_unicode_map.charmap)
     text = "எப்பிடி என்ன எதுக்கு என்னிக்கு எப்போதாவது புத்தகங்களை சரியான            " 
     print(text)
-    print(t.transliterate(text))[1]
+    print(t.transliterate(text)[1])
 #TODO: use google transliterate with a transliterated text I wrote, convert to tamil words and then convert back using transliterator code.
