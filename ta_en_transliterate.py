@@ -60,9 +60,9 @@ class TamilTransliterator(object):
             in_english = self.mapper.in_english(c)
             parent_type, sub_type = self.mapper.char_type(c)
             #print c, parent_type, sub_type
-            if parent_type is 'pulli':
+            if parent_type == 'pulli':
                 output.pop() # na followed by pulli becomes n
-            elif parent_type is 'vowels' and sub_type is not 'independent_vowels':
+            elif parent_type == 'vowels' and sub_type != 'independent_vowels':
                 output.pop()
                 output.extend(deque(in_english))
             else:
@@ -70,7 +70,9 @@ class TamilTransliterator(object):
         return u''.join(output)  
 
     def preprocess(self, text):
-        return unicode(text, 'utf-8')
+        if isinstance(text, bytes):
+            return text.decode('utf-8')
+        return text
 
     #this is for the whole text
     def transliterate(self, text):
@@ -81,6 +83,6 @@ class TamilTransliterator(object):
 if __name__ == "__main__":
     t = TamilTransliterator(tamil_unicode_map.charmap)
     text = "எப்பிடி என்ன எதுக்கு என்னிக்கு எப்போதாவது புத்தகங்களை சரியான            " 
-    print text
-    print t.transliterate(text)[1]
+    print(text)
+    print(t.transliterate(text))[1]
 #TODO: use google transliterate with a transliterated text I wrote, convert to tamil words and then convert back using transliterator code.

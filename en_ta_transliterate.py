@@ -4,15 +4,15 @@
 Module for transliterating tamil to english by using Google's transliteration API
 """
 
-import urllib2
+# import urllib2
 import urllib
 import json
-from StringIO import StringIO
+from io import StringIO
 
 
 def transliterate(english_text):
 
-    response = urllib2.urlopen("https://inputtools.google.com/request?%s&itc=ta-t-i0-und&num=13&cp=0&cs=0&ie=utf-8&oe=utf-8" % urllib.urlencode({'text': english_text}))
+    response = urllib.request.urlopen("https://inputtools.google.com/request?%s&itc=ta-t-i0-und&num=13&cp=0&cs=0&ie=utf-8&oe=utf-8" % urllib.parse.urlencode({'text': english_text}))
     output = response.read()
     output = StringIO(output)
     t =  json.load(output)
@@ -23,5 +23,5 @@ def transliterate(english_text):
 
 if __name__ == "__main__":
     text = "eppidi enna ethukku ennikku eppothaavathu puththakangkalai sariyaana"
-    print text
-    print transliterate(text)[1]
+    print(text)
+    print(transliterate(text))[1]
