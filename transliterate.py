@@ -1,13 +1,15 @@
 #!/usr/bin/env python
-# -*- coding: utf-8 -*-
 
 """
-Module for transliterating Tamil to English using a predefined character map.
+Module for transliterating Tamil to English and ViceVersa.
+Added TODO functionality. 
 """
+
+
+import requests
+from collections import deque
 
 import tamil_unicode_map
-from collections import deque
-import requests
 
 class Mapper:
     def __init__(self, charmap):
@@ -43,10 +45,38 @@ class Mapper:
         parent_type = self.categories.get(sub_type, '')
         return parent_type, sub_type
 
-class TamilTransliterator:
+
+class Transliterator:
     def __init__(self, charmap):
         self.mapper = Mapper(charmap)
-        self.transliteration_url = "https://inputtools.google.com/request"
+        # self.transliteration_url = "https://inputtools.google.com/request"
+        self.transliteration_url = 'https://www.google.com/inputtools/request'
+
+
+    def to_tamil(self, english_text):
+        params = {
+            'text': english_text,
+            'itc': 'ta-t-i0-und',
+            'num': 13,
+            'cp': 0,
+            'cs': 0,
+            'ie': 'utf-8',
+            'oe': 'utf-8'
+        }
+
+        try:
+            response = requests.get(self.transliteration_url, params=params)
+            response.raise_for_status()
+
+            data = response.json()
+            # print(data)
+            if data[0] == 'SUCCESS':
+                return data[1][0][1][0]
+            else:
+                return ''
+        except requests.exceptions.RequestException as e:
+            print(f"Error requesting transliteration: {e}")
+            return ''
 
 
     def to_english(self, text):
@@ -73,11 +103,11 @@ class TamilTransliterator:
     
 
     #TODO: use google transliterate with a transliterated text I wrote, convert to tamil words and then convert back using transliterator code
-    def to_tamil(self, english_text):
+    def to_english_api(self, text):
         params = {
-            'text': english_text,
+            'text': text,
             'itc': 'en-t-i0-und',
-            'num': 13,
+            'num': 1,
             'cp': 0,
             'cs': 0,
             'ie': 'utf-8',
@@ -89,7 +119,7 @@ class TamilTransliterator:
             response.raise_for_status()
 
             data = response.json()
-            # print(data)
+            print(data)
             if data[0] == 'SUCCESS':
                 return data[1][0][1][0]
             else:
@@ -109,10 +139,17 @@ class TamilTransliterator:
         return 0, ' '.join(transliterated_words).lower()
 
 if __name__ == "__main__":
-    t = TamilTransliterator(tamil_unicode_map.charmap)
-    
-    text = "என்ன பண்ற? சாப்டியா? அம்மா அப்பா நல்லா இருக்காங்களா?"
-    print("Input: ", text)
-    english_text = t.transliterate(text)[1]
-    print("Tamil to English: ", english_text)
+    t = Transliterator(tamil_unicode_map.charmap)
+
+    text = "Enna panra? saptiya? Amma appa nalla irukangala?"
+    print("Original: ", text)
+
+    transliterated = t.to_tamil(text)
+    print("Tanglish to Tamil: ",transliterated)
+
+    engText = t.transliterate(transliterated)[1]
+    print("Back to English: ", engText)
+
+    engText1 = t.to_english_api(transliterated)
+    print("Back to English via API: ", engText1)
 
